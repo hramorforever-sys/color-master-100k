@@ -1,40 +1,108 @@
-* { box-sizing: border-box; }
-html, body, #root { margin: 0; min-height: 100%; font-family: Inter, system-ui, sans-serif; background: #f4f4f5; }
-body { min-height: 100vh; }
-button, input { font: inherit; }
-button { cursor: pointer; }
-.app { max-width: 1800px; margin: 0 auto; padding: 20px; }
-.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-.eyebrow { margin: 0; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.72rem; }
-.topbar h1 { margin: 0; font-size: clamp(2rem, 2vw, 3rem); }
-.lang-switcher { display: flex; gap: 8px; }
-.lang-switcher button, .tool-group button, .meta-actions button { background: #fff; border: 1px solid #d4d4d8; border-radius: 999px; padding: 8px 14px; }
-.lang-switcher .active, .tool-group .active { background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white; border-color: transparent; }
-.layout { display: grid; grid-template-columns: 300px minmax(0, 1fr) 310px; gap: 20px; }
-.panel { background: rgba(255,255,255,0.8); border: 1px solid rgba(148,163,184,0.5); border-radius: 22px; padding: 16px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08); }
-.sidebar, .workbench { display: flex; flex-direction: column; gap: 20px; }
-.library-grid { display: grid; gap: 10px; max-height: 680px; overflow: auto; }
-.library-card { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; width: 100%; text-align: left; border-radius: 14px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 12px; }
-.library-card.selected { border-color: #8b5cf6; background: #f5f3ff; }
-.badge { font-size: 0.7rem; padding: 4px 8px; background: #ecfeff; color: #0f766e; border-radius: 999px; }
-.toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
-.tool-group, .slider-group, .meta-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.inline { display: flex; }
-.slider-group { align-items: center; }
-.slider-group input[type='range'] { width: 120px; }
-.canvas-panel { display: flex; flex-direction: column; gap: 12px; }
-.canvas-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-.canvas-header h2 { margin: 0; }
-.canvas-shell { display: flex; justify-content: center; align-items: center; min-height: 780px; background: linear-gradient(135deg, #fdf2f8, #eff6ff); border: 1px solid #dbeafe; border-radius: 20px; overflow: hidden; }
-.art-canvas { width: min(82vw, 820px); height: min(82vw, 820px); max-width: 820px; max-height: 820px; border-radius: 18px; background: #fff; touch-action: none; image-rendering: auto; }
-.status-message { margin: 0; color: #0f766e; }
-.progress-bar { position: relative; width: 100%; height: 12px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
-.progress-bar span { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(90deg, #ec4899, #8b5cf6); }
-.palette-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-.swatch { width: 48px; height: 48px; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.12); }
-.mini-list { display: flex; flex-direction: column; gap: 8px; }
-.reward-list { display: flex; flex-direction: column; gap: 10px; }
-.reward { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
-.reward.unlocked { background: linear-gradient(135deg, #d1fae5, #ecfeff); border-color: #34d399; }
-.rtl { direction: rtl; }
-@media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } .sidebar, .workbench { order: 2; } }
+export type Region = {
+  id: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  number: number;
+  targetColor: string;
+};
+
+export type Illustration = {
+  id: number;
+  title: string;
+  category: string;
+  level: string;
+  svg: string;
+  regions: Region[];
+};
+
+const categories = [
+  { name: 'Animals', items: ['Lion Cub', 'Dancing Panda', 'Arctic Fox', 'Forest Owl', 'River Otter', 'Sunset Gecko', 'Butterfly Pair', 'Penguin Parade', 'Rabbit Meadow', 'Meerkat Family'] },
+  { name: 'Nature', items: ['Wildflower Bloom', 'Mountain Lake', 'Sunrise Dunes', 'Autumn Leaves', 'Garden Rain', 'Forest Trail', 'Cloud Valley', 'Cactus Grove', 'Winter Birch', 'River Stones'] },
+  { name: 'Vehicles', items: ['City Bus', 'Race Car', 'Milk Truck', 'Helicopter', 'Submarine', 'Train Story', 'Vintage Bike', 'Fire Engine', 'School Bus', 'Rocket Ship'] },
+  { name: 'Fantasy', items: ['Dragon Egg', 'Castle Spire', 'Moon Mage', 'Elf Lantern', 'Fairy Garden', 'Crystal Crown', 'Wizard Tower', 'Sun Dragon', 'Mystic Gate', 'Forest Sprite'] },
+  { name: 'Underwater Life', items: ['Coral Reef', 'Turtle Haven', 'Jelly Bloom', 'Octopus Joy', 'School of Fish', 'Sea Star', 'Dolphin Leap', 'Kelp Forest', 'Pearl Diver', 'Wave Shell'] },
+  { name: "Children's Drawings", items: ['Smiling Kite', 'Toy Parade', 'Rainbow Rocket', 'Happy Castle', 'Cloud Friends', 'Cupcake Garden', 'Animal Picnic', 'Candy Castle', 'Dinosaur Play', 'Moon Lantern'] },
+  { name: 'Geometric Patterns', items: ['Mandala Bloom', 'Stellar Wave', 'Retro Tiles', 'Lattice Bloom', 'Orbital Pattern', 'Dice Mosaic', 'Star Spiral', 'Sunburst Grid', 'Triangle Dream', 'Circle Dance'] },
+  { name: 'Islamic Art', items: ['Star Dome', 'Arabesque Door', 'Tile Garden', 'Lantern Arch', 'Moon Motif', 'Lotus Tile', 'Crescent Hall', 'Pattern Crown', 'Rosette Frame', 'Mosaic Fountain'] },
+  { name: 'World Landmarks', items: ['Eiffel Tower', 'Statue of Liberty', 'Pyramids', 'Big Ben', 'Colosseum', 'Sphinx Gate', 'Taj Mahal', 'Golden Gate', 'Mount Fuji', 'Stonehenge'] },
+  { name: 'Creative Illustrations', items: ['Dream Garden', 'Neon Bird', 'Volcanic Bloom', 'Paper Sky', 'Festival Lights', 'Solar Rain', 'Sky Train', 'Starlight Garden', 'Steam City', 'Moon Paper'] }
+];
+
+const basePalette = ['#f43f5e', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6', '#0f172a'];
+
+function buildSvg(seed: number, title: string): string {
+  const accentA = basePalette[seed % basePalette.length];
+  const accentB = basePalette[(seed + 3) % basePalette.length];
+  const accentC = basePalette[(seed + 6) % basePalette.length];
+
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900">
+      <rect width="900" height="900" fill="#ffffff"/>
+      <circle cx="450" cy="450" r="330" fill="none" stroke="#0f172a" stroke-width="4" stroke-dasharray="10 14" opacity="0.25"/>
+      <g fill="none" stroke="#111827" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="240" cy="220" r="90" fill="none" stroke="${accentA}" opacity="0.2"/>
+        <circle cx="660" cy="250" r="100" fill="none" stroke="${accentB}" opacity="0.2"/>
+        <circle cx="480" cy="640" r="130" fill="none" stroke="${accentC}" opacity="0.2"/>
+        <path d="M180 165 L270 100 L360 165 L310 260 L220 260 Z" fill="${accentA}" opacity="0.08"/>
+        <path d="M540 165 L660 110 L770 180 L710 290 L590 300 Z" fill="${accentB}" opacity="0.08"/>
+        <path d="M290 560 L420 500 L550 560 L510 700 L360 720 Z" fill="${accentC}" opacity="0.08"/>
+        <path d="M210 360 C270 280, 330 280, 390 360 S510 440, 570 360 S690 280, 720 360" />
+        <path d="M220 455 C290 410, 350 420, 410 470 S515 535, 620 475" />
+        <path d="M290 250 L330 310 L290 375 L240 325 Z" fill="${accentA}" opacity="0.12"/>
+        <path d="M590 310 L650 270 L710 330 L670 395 L600 385 Z" fill="${accentB}" opacity="0.12"/>
+        <path d="M370 575 L470 530 L530 585 L495 700 L395 700 Z" fill="${accentC}" opacity="0.12"/>
+      </g>
+      <g font-family="sans-serif" font-weight="700" fill="#0f172a" font-size="36">
+        <text x="450" y="840" text-anchor="middle">${title}</text>
+      </g>
+      <g stroke="#0f172a" stroke-width="6" fill="none" opacity="0.88">
+        <path d="M120 710 C250 600, 330 610, 450 720 S640 850, 780 720"/>
+      </g>
+    </svg>
+  `;
+}
+
+function buildRegions(seed: number, category: string): Region[] {
+  const regionCount = 5 + (seed % 4);
+  const regions: Region[] = [];
+  const palette = [...basePalette];
+
+  for (let i = 0; i < regionCount; i += 1) {
+    const x = 120 + ((seed + i * 37) % 500);
+    const y = 120 + ((seed * 13 + i * 71) % 470);
+    const w = 140 + ((seed + i * 17) % 170);
+    const h = 130 + ((seed * 7 + i * 29) % 150);
+    regions.push({
+      id: `${category}-${i}`,
+      x,
+      y,
+      w,
+      h,
+      number: i + 1,
+      targetColor: palette[i % palette.length]
+    });
+  }
+
+  return regions;
+}
+
+export const catalog: Illustration[] = categories.flatMap((category, categoryIndex) =>
+  category.items.map((item, itemIndex) => {
+    const id = categoryIndex * 10 + itemIndex + 1;
+    const seed = id * 13 + categoryIndex * 7;
+    return {
+      id,
+      title: item,
+      category: category.name,
+      level: ['Beginner', 'Intermediate', 'Advanced'][itemIndex % 3],
+      svg: buildSvg(seed, item),
+      regions: buildRegions(seed, `${category.name}-${id}`)
+    };
+  })
+);
+
+export function getIllustrationById(id: number) {
+  return catalog.find((illustration) => illustration.id === id);
+}

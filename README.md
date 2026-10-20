@@ -1,19 +1,20 @@
 # Color Master 100K
 
-Color Master 100K is a standalone interactive coloring game built as a Vite + React app. The current build includes 100 original, rights-cleared vector-style illustrations spanning 10 categories.
+Color Master 100K is a standalone interactive coloring game built as a Vite + React app. The project ships with 100 rights-cleared original illustrations across 10 categories.
 
 ## Features
-- Free drawing with brush, eraser, pan, zoom, undo and redo
+- Free drawing with brush and eraser tools
+- Zoom, pan, undo, redo, and color picker
 - Fill-area coloring with boundary-aware flood fill
-- Color-by-number mode with target palette and progress tracking
-- Save, resume, favorites, export, completion tracking, rewards unlocks
-- English, Spanish, and Arabic localization with RTL support
-- Offline-ready PWA shell and localStorage-based progress persistence
+- Color-by-number mode with progress tracking
+- Save, resume, favorites, export, rewards, and completion tracking
+- English, Spanish, and Arabic modes with RTL layout
+- Offline-ready PWA shell and local progress storage
 
-## Included assets
-The shipped library contains 100 original illustrations created for this project and released under the project license. The app does not provide 100,000 illustrations; the actual shipped library is 100 curated illustrations.
+## Important note on scale
+This app intentionally ships with 100 usable original illustrations. It does not claim to provide 100,000 illustrations; the actual asset library in this build is 100 illustrations.
 
-## Quick start
+## Setup
 ```bash
 npm install
 npm run dev
@@ -24,12 +25,10 @@ npm run dev
 npm run build
 ```
 
-## Tests
+## Automated tests
 ```bash
 npm test
 ```
 
-## Notes
-- Brush drawing, fill operations, and color-by-number all work on rasterized canvas content.
-- Content is stored locally in the browser to support saving, favorites, and resume logic.
-- A simple service worker enables offline access to the app shell after the first load.
+## Asset rights and licensing
+See `docs/LICENSING.md` and the project `LICENSE` file for licensing information.
