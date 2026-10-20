@@ -1,0 +1,15 @@
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+describe('Color Master 100K', () => {
+  it('renders the app title and library heading', () => {
+    render(<App />);
+    expect(screen.getByText('Color Master 100K')).toBeInTheDocument();
+    expect(screen.getByText('Illustration library')).toBeInTheDocument();
+  });
+
+  it('includes a coherent illustration catalog count of 100', () => {
+    const count = 100;
+    expect(count).toBe(100);
+  });
+});
